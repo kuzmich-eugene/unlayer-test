@@ -1,0 +1,13 @@
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+}
+
+.btn {
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}

@@ -1,0 +1,20 @@
+<div class="container">
+  <header class="header">
+    <p-dropdown
+      class="custom-dropdown"
+      panelStyleClass="custom-dropdown-panel"
+      [options]="templates"
+      [formControl]="currentTemplate"
+      optionLabel="name"
+      placeholder="Template">
+    </p-dropdown>
+    <button
+      class="btn"
+      (click)="onCloseDialog()">
+      Close
+    </button>
+  </header>
+  <main class="main">
+    <div id="editor1" style="width: 100%; height: 600px;"></div>
+  </main>
+</div>

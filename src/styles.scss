@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  font-size: 16px;
+}
+
+.unlayer-editor-dialog {
+  &.p-dialog {
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+
+    .p-dialog-header {
+      border-radius: unset;
+    }
+
+    .p-dialog-content {
+      padding: 0;
+      border-radius: unset;
+      overflow: hidden;
+    }
+  }
+}
