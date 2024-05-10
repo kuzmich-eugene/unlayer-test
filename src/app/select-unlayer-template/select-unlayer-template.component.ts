@@ -57,11 +57,6 @@ export class SelectUnlayerTemplateComponent {
       });
     });
 
-    unlayer.saveDesign((design: any) => {
-      console.log('save design', design);
-      this.unlayerDesign = JSON.stringify(design);
-    });
-
     this.currentTemplate.valueChanges.pipe(
       tap((value) => {
         this.onDesign(value);
@@ -72,6 +67,10 @@ export class SelectUnlayerTemplateComponent {
 
   onDesign(template: any): void {
     unlayer.loadDesign(template.design);
+    unlayer.saveDesign((design: any)=>{
+      this.unlayerDesign = JSON.stringify(design);
+      console.log(this.unlayerDesign,"Current deisgn")
+    })
   }
 
   onCloseDialog(): void {
