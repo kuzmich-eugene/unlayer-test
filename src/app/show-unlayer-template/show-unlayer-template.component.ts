@@ -51,14 +51,21 @@ export class ShowUnlayerTemplateComponent implements OnInit {
         this.unlayerHtml = data.html;
       });
     });
-
-    unlayer.saveDesign((design: any) => {
-      console.log('save design', design);
-      this.unlayerDesign = JSON.stringify(design);
-    });
   }
 
-  onCloseDialog(): void {
+  async onCloseDialog(): Promise<void> {
+    await this.saveDesign();
     this.dialogRef.close(this.unlayerDesign);
+  }
+
+  private asyncDelay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  };
+
+  private async saveDesign(): Promise<void> {
+    await this.asyncDelay(100);
+    unlayer.saveDesign((design: any)=>{
+      this.unlayerDesign = JSON.stringify(design);
+    })
   }
 }

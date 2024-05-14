@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Subject, firstValueFrom, takeUntil, tap } from 'rxjs';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UnlayerService } from '../unlayer.service';
-import { Subject, firstValueFrom, takeUntil, tap } from 'rxjs';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { UnlayerService } from '../unlayer.service';
 
 declare const unlayer: any;
 
@@ -17,9 +18,10 @@ declare const unlayer: any;
 })
 export class SelectUnlayerTemplateComponent {
   templates = [];
-  currentTemplate = new FormControl<any>(null);
+  currentTemplate = new FormControl<any>({ value: null, disabled: true });
   unlayerDesign = '';
   unlayerHtml = '';
+  isUnlayerEditorReady = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -57,28 +59,39 @@ export class SelectUnlayerTemplateComponent {
       });
     });
 
+    unlayer.addEventListener('editor:ready', () => {
+      this.isUnlayerEditorReady = true;
+      this.currentTemplate.enable({ emitEvent: false});
+      console.log('editor:ready');
+    });
+
     this.currentTemplate.valueChanges.pipe(
-      tap((value) => {
-        this.onDesign(value);
+      tap((template) => {
+        unlayer.loadDesign(template.design);
+        this.saveDesign();
       }),
       takeUntil(this.unsubscribe$)
     ).subscribe();
   }
 
-  onDesign(template: any): void {
-    unlayer.loadDesign(template.design);
-    unlayer.saveDesign((design: any)=>{
-      this.unlayerDesign = JSON.stringify(design);
-      console.log(this.unlayerDesign,"Current deisgn")
-    })
-  }
-
-  onCloseDialog(): void {
+  async onCloseDialog(): Promise<void> {
+    await this.saveDesign();
     this.dialogRef.close(this.unlayerDesign);
   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  private asyncDelay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  };
+
+  private async saveDesign(): Promise<void> {
+    await this.asyncDelay(100);
+    unlayer.saveDesign((design: any)=>{
+      this.unlayerDesign = JSON.stringify(design);
+    })
   }
 }

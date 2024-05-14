@@ -10,6 +10,7 @@
     </p-dropdown>
     <button
       class="btn"
+      [disabled]="!isUnlayerEditorReady"
       (click)="onCloseDialog()">
       Close
     </button>
